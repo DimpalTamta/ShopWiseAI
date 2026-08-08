@@ -2,7 +2,6 @@ import streamlit as st
 import speech_recognition as sr
 import gtts
 import io
-import pygame
 import time
 from langdetect import detect
 from PIL import Image
@@ -34,10 +33,6 @@ def load_chat_history():
     return []
 
 def save_chat_history(history):
-    # Write to a temp file first, then atomically replace the real file.
-    # This avoids ending up with a half-written/corrupted JSON file (which
-    # load_chat_history would then silently treat as "no history") if the
-    # app is interrupted mid-save.
     tmp_file = CHAT_HISTORY_FILE + ".tmp"
     with open(tmp_file, "w", encoding="utf-8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
@@ -122,10 +117,9 @@ def get_intro_message(query, count):
     return intro
 
 # =====================================================
-# About Us Page (now inside app.py)
+# About Us Page
 # =====================================================
 def show_about_page():
-    # Live stats pulled from the actual loaded catalog (fast: no translation call)
     try:
         num_products = len(products)
         num_categories = len(get_all_categories(products, auto_translate=False))
@@ -384,21 +378,12 @@ def show_about_page():
         </div>
     </div>
     """
-    # Markdown treats lines indented 4+ spaces (after a blank line) as a
-    # literal code block. Stripping each line's leading whitespace keeps
-    # this as one continuous raw-HTML block so it renders as styled HTML
-    # instead of showing up as a scrollable code box.
     about_html = "\n".join(line.strip() for line in about_html.strip().split("\n"))
     st.markdown(about_html, unsafe_allow_html=True)
 
     if st.button("🏠 Back to Home", key="about_back", use_container_width=False):
         st.session_state.nav_page = "main"
         st.rerun()
-
-# =====================================================
-# Initialize Pygame Mixer
-# =====================================================
-pygame.mixer.init()
 
 # =====================================================
 # Page Configuration
@@ -441,8 +426,7 @@ if "voice_text" not in st.session_state:
     st.session_state.voice_text = ""
 if "clear_search" not in st.session_state:
     st.session_state.clear_search = False
-if "tts_playing_asin" not in st.session_state:
-    st.session_state.tts_playing_asin = None
+# No tts_playing_asin – removed
 if "current_session_id" not in st.session_state:
     st.session_state.current_session_id = None
 
@@ -659,7 +643,6 @@ section[data-testid="stSidebar"] * {
     color: #e5e7eb !important;
 }
 
-/* Brand block at top of sidebar */
 .sidebar-brand {
     display: flex;
     align-items: center;
@@ -687,7 +670,6 @@ section[data-testid="stSidebar"] * {
     font-size: 12px !important;
 }
 
-/* ---- Section Headers – unified gradient (blue-purple-pink) ---- */
 .section-header {
     display: block;
     width: 100%;
@@ -711,7 +693,6 @@ section[data-testid="stSidebar"] * {
     background: linear-gradient(90deg, #3b82f6, #7c3aed, #e94560);
 }
 
-/* Sidebar controls */
 section[data-testid="stSidebar"] .stSelectbox label,
 section[data-testid="stSidebar"] .stSlider label,
 section[data-testid="stSidebar"] .stCheckbox label,
@@ -721,7 +702,6 @@ section[data-testid="stSidebar"] label {
     font-weight: 500 !important;
 }
 
-/* Dropdowns – white cards */
 section[data-testid="stSidebar"] div[data-baseweb="select"] > div {
     background-color: #ffffff !important;
     border: 2px solid transparent !important;
@@ -755,12 +735,7 @@ section[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] div[rol
     color: #4c1d95 !important;
 }
 
-/* ---------- PRICE / RATING SLIDER – SINGLE CLEAN RED TRACK, NO GREY BOX ---------- */
-/* Streamlit wraps every slider in its own widget container that carries a
-   default grey pill background — that's the thick grey box you were
-   seeing behind the thin track. Strip it (and any nested wrapper divs)
-   down to fully transparent, and give the whole widget some breathing
-   room so it doesn't crowd/overlap the label text underneath it. */
+/* ---------- PRICE / RATING SLIDER – RED TRACK, NO TOOLTIP ---------- */
 section[data-testid="stSidebar"] div[data-testid="stSlider"] {
     background: transparent !important;
     padding: 2px 0 18px 0 !important;
@@ -775,25 +750,16 @@ section[data-testid="stSidebar"] div[data-baseweb="slider"] {
     margin: 8px 0 !important;
     padding: 0 !important;
 }
-/* The full track is one flat, plain color end-to-end — no red "fill"
-   from 0 up to the current value, so the unselected side stays white/plain
-   and only the thumb (handle) is red. */
 section[data-testid="stSidebar"] div[data-baseweb="slider"] > div:first-child {
     background: rgba(255,255,255,0.35) !important;
     height: 6px !important;
     border-radius: 6px !important;
 }
-/* Neutralize the inner progress/fill div so it blends into the same plain
-   track color instead of showing as a red bar from 0 to the thumb. */
 section[data-testid="stSidebar"] div[data-baseweb="slider"] > div:first-child > div {
     background: rgba(255,255,255,0.35) !important;
     height: 6px !important;
     border-radius: 6px !important;
 }
-/* The thumb (handle) – red with glow. The transition is scoped to ONLY
-   box-shadow/filter (not "all"/position) — transitioning the thumb's
-   position made it visibly lag half a beat behind the mouse while
-   dragging, which is what felt "not smooth". */
 section[data-testid="stSidebar"] div[data-baseweb="slider"] [role="slider"] {
     background: #dc2626 !important;
     border: 3px solid #ffffff !important;
@@ -808,13 +774,6 @@ section[data-testid="stSidebar"] div[data-baseweb="slider"] [role="slider"]:acti
     box-shadow: 0 0 20px rgba(239,68,68,0.85) !important;
     filter: brightness(1.1);
 }
-/* Hide the min/max endpoint labels ("0" ... "268000") that Streamlit shows
-   at the two ends of the track. Only the current value (shown just above
-   the thumb) should be visible — not a redundant pair of range numbers.
-   We target this a few different ways since the exact internal testid
-   can vary by Streamlit version — the structural rule (last child of the
-   slider widget that ISN'T the slider control itself) is the reliable
-   catch-all if the named testids below don't match. */
 section[data-testid="stSidebar"] div[data-testid="stTickBar"],
 section[data-testid="stSidebar"] div[data-testid="stTickBarMin"],
 section[data-testid="stSidebar"] div[data-testid="stTickBarMax"],
@@ -826,8 +785,6 @@ section[data-testid="stSidebar"] div[data-testid="stSlider"] > div:last-child:no
     margin: 0 !important;
     padding: 0 !important;
 }
-/* Style the current-value label that floats above the thumb so it's easy
-   to read (this is the ONLY number that should show on a slider). */
 section[data-testid="stSidebar"] div[data-testid="stThumbValue"] {
     color: #ffffff !important;
     font-weight: 700 !important;
@@ -870,7 +827,6 @@ section[data-testid="stSidebar"] .stCaption, section[data-testid="stSidebar"] sm
     color: #9ca3af !important;
 }
 
-/* Sidebar buttons – clean dark cards */
 section[data-testid="stSidebar"] .stButton>button {
     background: rgba(255,255,255,0.05) !important;
     color: #e5e7eb !important;
@@ -905,7 +861,6 @@ section[data-testid="stSidebar"] button[kind="primary"]:hover {
     border-color: #f87171 !important;
 }
 
-/* Chat history cards – fixed size, no date */
 section[data-testid="stSidebar"] div[data-testid="stVerticalBlockBorderWrapper"] {
     border-radius: 12px !important;
     border: 1px solid rgba(255,255,255,0.14) !important;
@@ -951,7 +906,6 @@ section[data-testid="stSidebar"] div[data-testid="stVerticalBlockBorderWrapper"]
 .tech-pill.pink   { background: rgba(233,69,96,0.16);   border-color: rgba(233,69,96,0.4);   color: #fca5a5 !important; }
 .tech-pill.gold   { background: rgba(245,166,35,0.16);  border-color: rgba(245,166,35,0.4);  color: #fcd34d !important; }
 
-/* Analytics container (inline) */
 .analytics-container {
     max-width:900px; 
     margin:40px auto; 
@@ -977,7 +931,6 @@ section[data-testid="stSidebar"] div[data-testid="stVerticalBlockBorderWrapper"]
     margin-bottom:30px;
 }
 
-/* Analytics metric cards */
 div[data-testid="stMetric"] {
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.12);
@@ -990,7 +943,7 @@ div[data-testid="stMetricValue"] { color: #ffffff !important; }
 """, unsafe_allow_html=True)
 
 # =====================================================
-# Floating Bubbles (visible on all pages)
+# Floating Bubbles
 # =====================================================
 bubbles_html = ""
 for i in range(12):
@@ -1003,7 +956,7 @@ for i in range(12):
 st.markdown(bubbles_html, unsafe_allow_html=True)
 
 # =====================================================
-# Sidebar (common to all pages)
+# Sidebar
 # =====================================================
 with st.sidebar:
     st.markdown("""
@@ -1016,7 +969,6 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
-    # Navigation buttons
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🏠 Home", use_container_width=True):
@@ -1033,7 +985,17 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # Only show filters & history on the main page
+    # We define these variables here so they always exist globally
+    # (they will be overwritten by the sidebar when on the main page)
+    voice_lang = "English"
+    display_lang = "English"
+    auto_detect = True
+    selected_category = "All"
+    min_price = min_price_all
+    max_price = max_price_all
+    min_rating = 0.0
+    sort_by = "Relevance"
+
     if st.session_state.nav_page == "main":
         st.markdown('<div class="section-header">🌐 Language</div>', unsafe_allow_html=True)
         voice_lang = st.selectbox("Voice Language", ["English", "Hindi"], index=0)
@@ -1045,7 +1007,6 @@ with st.sidebar:
         cat_display = ["All"] + translated_cats
         selected_category = st.selectbox("Category", cat_display)
 
-        # ----- ORIGINAL STYLE PRICE SLIDERS (two separate sliders) -----
         st.markdown("**Price Range**")
         min_price = st.slider("Min (₹)", min_price_all, max_price_all, min_price_all, step=50)
         max_price = st.slider("Max (₹)", min_price_all, max_price_all, max_price_all, step=50)
@@ -1091,7 +1052,6 @@ with st.sidebar:
                 <span class="tech-pill gold">5,000 Products</span>
             """, unsafe_allow_html=True)
 
-        # Chat History
         history = load_chat_history()
         st.markdown('<div class="section-header">📜 Recent Searches</div>', unsafe_allow_html=True)
 
@@ -1139,7 +1099,6 @@ if st.session_state.nav_page == "about":
     show_about_page()
 
 elif st.session_state.nav_page == "analytics":
-    # ----- ANALYTICS PAGE -----
     st.markdown("""
     <div class="analytics-container">
         <h1>📊 Search Analytics</h1>
@@ -1201,309 +1160,281 @@ elif st.session_state.nav_page == "analytics":
         st.rerun()
 
 else:
-    # ----- MAIN PAGE (default) -----
-    # Header
-    header_col1, header_col2 = st.columns([1, 5])
-    with header_col1:
-        try:
-            st.image("logo.png", width=118)
-        except:
-            st.write("🛍️")
-    with header_col2:
-        st.markdown("<div class='main-title'>ShopWise AI</div>", unsafe_allow_html=True)
-        st.markdown("<div class='subtitle'>Your Fashion & Shopping Buddy, Powered by AI</div>", unsafe_allow_html=True)
-        st.markdown("<div class='tagline'>Find it faster — just type it, say it, or snap a photo of it.</div>", unsafe_allow_html=True)
-        st.markdown("""
-            <div class="badge-row">
-                <span class="badge-chip badge-1">🔍 Smart Search</span>
-                <span class="badge-chip badge-2">🎤 Voice Search</span>
-                <span class="badge-chip badge-3">📸 Image Search</span>
-                <span class="badge-chip badge-4">🌐 Multi‑lingual</span>
-                <span class="badge-chip badge-5">📜 Search History</span>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+    # ==================== MAIN PAGE ====================
+    try:
+        header_col1, header_col2 = st.columns([1, 5])
+        with header_col1:
+            try:
+                st.image("logo.png", width=118)
+            except:
+                st.write("🛍️")
+        with header_col2:
+            st.markdown("<div class='main-title'>ShopWise AI</div>", unsafe_allow_html=True)
+            st.markdown("<div class='subtitle'>Your Fashion & Shopping Buddy, Powered by AI</div>", unsafe_allow_html=True)
+            st.markdown("<div class='tagline'>Find it faster — just type it, say it, or snap a photo of it.</div>", unsafe_allow_html=True)
+            st.markdown("""
+                <div class="badge-row">
+                    <span class="badge-chip badge-1">🔍 Smart Search</span>
+                    <span class="badge-chip badge-2">🎤 Voice Search</span>
+                    <span class="badge-chip badge-3">📸 Image Search</span>
+                    <span class="badge-chip badge-4">🌐 Multi‑lingual</span>
+                    <span class="badge-chip badge-5">📜 Search History</span>
+                </div>
+            """, unsafe_allow_html=True)
+            st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
 
-    # ---------- Main Page logic (search, results, etc.) ----------
-    def on_query_change():
-        if "search_input" in st.session_state:
-            st.session_state.query = st.session_state.search_input
+        def on_query_change():
+            if "search_input" in st.session_state:
+                st.session_state.query = st.session_state.search_input
 
-    def speak_text(text, lang='en', asin=None):
-        if asin is not None and st.session_state.tts_playing_asin == asin:
-            pygame.mixer.music.stop()
-            st.session_state.tts_playing_asin = None
-            return
-        pygame.mixer.music.stop()
-        try:
-            tts = gtts.gTTS(text, lang=lang)
-            fp = io.BytesIO()
-            tts.write_to_fp(fp)
-            fp.seek(0)
-            pygame.mixer.music.load(fp)
-            pygame.mixer.music.play()
-            if asin is not None:
-                st.session_state.tts_playing_asin = asin
-        except Exception as e:
-            st.error(f"TTS error: {e}")
+        def speak_text(text, lang='en'):
+            """Generate TTS audio and play in browser using st.audio"""
+            try:
+                tts = gtts.gTTS(text, lang=lang)
+                fp = io.BytesIO()
+                tts.write_to_fp(fp)
+                fp.seek(0)
+                st.audio(fp, format='audio/mp3')
+            except Exception as e:
+                st.error(f"TTS error: {e}")
 
-    # Pre‑render logic: handle voice text and clear flag
-    if st.session_state.clear_search:
-        st.session_state.search_input = ""
-        st.session_state.query = ""
-        st.session_state.clear_search = False
+        if st.session_state.clear_search:
+            st.session_state.search_input = ""
+            st.session_state.query = ""
+            st.session_state.clear_search = False
 
-    if st.session_state.voice_text:
-        st.session_state.search_input = st.session_state.voice_text
-        st.session_state.query = st.session_state.voice_text
-        st.session_state.voice_text = ""
+        if st.session_state.voice_text:
+            st.session_state.search_input = st.session_state.voice_text
+            st.session_state.query = st.session_state.voice_text
+            st.session_state.voice_text = ""
 
-    # Search bar
-    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
-    col1, col2 = st.columns([5, 1])
-    with col1:
-        st.text_input(
-            label="Search query",
-            label_visibility="collapsed",
-            placeholder="🔍 Search products... Example: black cap under ₹500",
-            key="search_input",
-            on_change=on_query_change
-        )
-    with col2:
-        if st.button("🎤 Speak"):
-            with st.spinner("Listening..."):
-                recognizer = sr.Recognizer()
-                recognizer.energy_threshold = 4000
-                recognizer.dynamic_energy_threshold = True
-                device_index = st.session_state.mic_device_index
-                try:
-                    with sr.Microphone(device_index=device_index) as source:
-                        recognizer.adjust_for_ambient_noise(source, duration=1.0)
-                        audio = recognizer.listen(source, timeout=5, phrase_time_limit=6)
-                except Exception as e:
-                    st.error(f"Microphone error: {e}. Please check your microphone selection.")
-                    st.stop()
-
-                lang_code = "hi-IN" if voice_lang == "Hindi" else "en-IN"
-                try:
-                    query_text = recognizer.recognize_google(audio, language=lang_code)
-                except sr.UnknownValueError:
-                    fallback = "en-US" if lang_code == "hi-IN" else "hi-IN"
+        st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
+        col1, col2 = st.columns([5, 1])
+        with col1:
+            st.text_input(
+                label="Search query",
+                label_visibility="collapsed",
+                placeholder="🔍 Search products... Example: black cap under ₹500",
+                key="search_input",
+                on_change=on_query_change
+            )
+        with col2:
+            # Voice Input using browser microphone
+            audio_value = st.audio_input("🎤 Speak your query")
+            if audio_value:
+                with st.spinner("Transcribing..."):
+                    recognizer = sr.Recognizer()
+                    audio_data = sr.AudioData(audio_value.getvalue(), 44100, 2)
                     try:
-                        query_text = recognizer.recognize_google(audio, language=fallback)
-                    except:
-                        st.error("Sorry, could not understand audio in either language. Please speak clearly.")
-                        st.stop()
-                except sr.RequestError:
-                    st.error("Speech service failed. Check internet connection.")
-                    st.stop()
+                        lang_code = "hi-IN" if voice_lang == "Hindi" else "en-IN"
+                        query_text = recognizer.recognize_google(audio_data, language=lang_code)
+                        st.success(f"🎤 You said: **{query_text}**")
+                        st.session_state.voice_text = query_text
+                        st.rerun()
+                    except sr.UnknownValueError:
+                        st.error("Sorry, could not understand audio. Please speak clearly.")
+                    except sr.RequestError:
+                        st.error("Speech service failed. Check internet connection.")
 
-                st.success(f"🎤 You said: **{query_text}**")
-                st.session_state.voice_text = query_text
-                st.rerun()
-
-    # Search & Clear Buttons
-    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
-    col_search, col_clear = st.columns([4, 1])
-    with col_search:
-        if st.button("🚀 Search Products"):
-            query_to_use = st.session_state.query
-            if query_to_use.strip() != "":
-                with st.spinner("Searching products..."):
-                    translate_titles = (display_lang == "English")
-                    results = search_products(
-                        query_to_use, model, index, products,
-                        top_k=20, translate_titles=translate_titles
-                    )
-                    st.session_state.results = results
-                    st.session_state.page = 1
-                    if results:
-                        filters = {
-                            "category": selected_category,
-                            "min_price": min_price,
-                            "max_price": max_price,
-                            "min_rating": min_rating,
-                            "sort_by": sort_by
-                        }
-                        add_chat_session(query_to_use, results, filters)
-                        st.session_state.current_session_id = None
-                    st.rerun()
-            elif selected_category != "All":
-                with st.spinner(f"Fetching products in {selected_category}..."):
-                    from rag import get_reverse_category_mapping
-                    rev_map = get_reverse_category_mapping(products)
-                    original_cat = rev_map.get(selected_category)
-                    if original_cat is None:
-                        for eng, hin in rev_map.items():
-                            if selected_category.lower() in eng.lower() or eng.lower() in selected_category.lower():
-                                original_cat = hin
-                                break
-                    if original_cat is None:
-                        st.warning(f"Category '{selected_category}' not found.")
-                        st.session_state.results = []
-                    else:
-                        filtered_df = products[products["categoryName"] == original_cat]
-                        sample = filtered_df.head(10)
-                        from rag import get_category_mapping
-                        cat_mapping = get_category_mapping(products)
-                        results = []
-                        for idx, row in sample.iterrows():
-                            try:
-                                price = float(row["price"])
-                            except:
-                                price = 0
-                            try:
-                                list_price = float(row["listPrice"])
-                            except:
-                                list_price = 0
-                            if list_price > 0:
-                                discount = round(((list_price - price) / list_price) * 100)
-                            else:
-                                discount = 0
-                            category_en = cat_mapping.get(row["categoryName"], row["categoryName"])
-                            results.append({
-                                "asin": row["asin"],
-                                "title": row["title"],
-                                "category": category_en,
-                                "price": price,
-                                "listPrice": list_price,
-                                "discount": discount,
-                                "stars": row["stars"],
-                                "reviews": row["reviews"],
-                                "bestSeller": row["isBestSeller"],
-                                "image": row["imgUrl"],
-                                "url": row["productURL"]
-                            })
+        st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
+        col_search, col_clear = st.columns([4, 1])
+        with col_search:
+            if st.button("🚀 Search Products"):
+                query_to_use = st.session_state.query
+                if query_to_use.strip() != "":
+                    with st.spinner("Searching products..."):
+                        translate_titles = (display_lang == "English")
+                        results = search_products(
+                            query_to_use, model, index, products,
+                            top_k=20, translate_titles=translate_titles
+                        )
                         st.session_state.results = results
                         st.session_state.page = 1
                         if results:
-                            add_chat_session(f"Category: {selected_category}", results)
+                            filters = {
+                                "category": selected_category,
+                                "min_price": min_price,
+                                "max_price": max_price,
+                                "min_rating": min_rating,
+                                "sort_by": sort_by
+                            }
+                            add_chat_session(query_to_use, results, filters)
                             st.session_state.current_session_id = None
                         st.rerun()
+                elif selected_category != "All":
+                    with st.spinner(f"Fetching products in {selected_category}..."):
+                        from rag import get_reverse_category_mapping
+                        rev_map = get_reverse_category_mapping(products)
+                        original_cat = rev_map.get(selected_category)
+                        if original_cat is None:
+                            for eng, hin in rev_map.items():
+                                if selected_category.lower() in eng.lower() or eng.lower() in selected_category.lower():
+                                    original_cat = hin
+                                    break
+                        if original_cat is None:
+                            st.warning(f"Category '{selected_category}' not found.")
+                            st.session_state.results = []
+                        else:
+                            filtered_df = products[products["categoryName"] == original_cat]
+                            sample = filtered_df.head(10)
+                            from rag import get_category_mapping
+                            cat_mapping = get_category_mapping(products)
+                            results = []
+                            for idx, row in sample.iterrows():
+                                try:
+                                    price = float(row["price"])
+                                except:
+                                    price = 0
+                                try:
+                                    list_price = float(row["listPrice"])
+                                except:
+                                    list_price = 0
+                                if list_price > 0:
+                                    discount = round(((list_price - price) / list_price) * 100)
+                                else:
+                                    discount = 0
+                                category_en = cat_mapping.get(row["categoryName"], row["categoryName"])
+                                results.append({
+                                    "asin": row["asin"],
+                                    "title": row["title"],
+                                    "category": category_en,
+                                    "price": price,
+                                    "listPrice": list_price,
+                                    "discount": discount,
+                                    "stars": row["stars"],
+                                    "reviews": row["reviews"],
+                                    "bestSeller": row["isBestSeller"],
+                                    "image": row["imgUrl"],
+                                    "url": row["productURL"]
+                                })
+                            st.session_state.results = results
+                            st.session_state.page = 1
+                            if results:
+                                add_chat_session(f"Category: {selected_category}", results)
+                                st.session_state.current_session_id = None
+                            st.rerun()
+                else:
+                    st.warning("Please enter a product name or select a category.")
+
+        with col_clear:
+            if st.button("🗑️ Clear"):
+                st.session_state.clear_search = True
+                st.session_state.voice_text = ""
+                st.session_state.results = []
+                st.session_state.page = 1
+                st.session_state.uploaded_image = None
+                st.session_state.current_session_id = None
+                st.rerun()
+
+        with st.expander("📸 Search by Image", expanded=False):
+            st.markdown("Upload a product photo and find visually similar items.")
+            uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key="image_uploader")
+
+            if uploaded_file is not None:
+                image = Image.open(uploaded_file)
+                st.image(image, caption="Uploaded Image", width=200)
+                st.session_state.uploaded_image = uploaded_file
+
+                if st.button("🔍 Find Similar Products", key="image_search_button"):
+                    with st.spinner("Searching by image..."):
+                        results = search_by_image(image, products, top_k=20, translate_titles=(display_lang=="English"))
+                        if results:
+                            st.session_state.results = results
+                            st.session_state.page = 1
+                            add_chat_session("Image Search", results)
+                            st.session_state.current_session_id = None
+                            st.rerun()
+                        else:
+                            st.warning("No similar products found. Try a different image.")
             else:
-                st.warning("Please enter a product name or select a category.")
+                st.session_state.uploaded_image = None
 
-    with col_clear:
-        if st.button("🗑️ Clear"):
-            st.session_state.clear_search = True
-            st.session_state.voice_text = ""
-            st.session_state.results = []
-            st.session_state.page = 1
-            st.session_state.uploaded_image = None
-            st.session_state.current_session_id = None
-            st.rerun()
+        results = st.session_state.results
 
-    # Image Search
-    with st.expander("📸 Search by Image", expanded=False):
-        st.markdown("Upload a product photo and find visually similar items.")
-        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"], key="image_uploader")
+        if results:
+            filtered = results
+            if selected_category != "All":
+                filtered = [p for p in filtered if p['category'] == selected_category]
+            filtered = [p for p in filtered if min_price <= p['price'] <= max_price]
+            filtered = [p for p in filtered if float(p['stars']) >= min_rating]
 
-        if uploaded_file is not None:
-            image = Image.open(uploaded_file)
-            st.image(image, caption="Uploaded Image", width=200)
-            st.session_state.uploaded_image = uploaded_file
+            if sort_by == "Price: Low to High":
+                filtered = sorted(filtered, key=lambda x: x['price'])
+            elif sort_by == "Price: High to Low":
+                filtered = sorted(filtered, key=lambda x: x['price'], reverse=True)
+            elif sort_by == "Discount: High to Low":
+                filtered = sorted(filtered, key=lambda x: x['discount'], reverse=True)
+            elif sort_by == "Rating: High to Low":
+                filtered = sorted(filtered, key=lambda x: float(x['stars']), reverse=True)
 
-            if st.button("🔍 Find Similar Products", key="image_search_button"):
-                with st.spinner("Searching by image..."):
-                    results = search_by_image(image, products, top_k=20, translate_titles=(display_lang=="English"))
-                    if results:
-                        st.session_state.results = results
-                        st.session_state.page = 1
-                        add_chat_session("Image Search", results)
-                        st.session_state.current_session_id = None
-                        st.rerun()
-                    else:
-                        st.warning("No similar products found. Try a different image.")
-        else:
-            st.session_state.uploaded_image = None
-
-    # Display Results
-    results = st.session_state.results
-
-    if results:
-        filtered = results
-        if selected_category != "All":
-            filtered = [p for p in filtered if p['category'] == selected_category]
-        filtered = [p for p in filtered if min_price <= p['price'] <= max_price]
-        filtered = [p for p in filtered if float(p['stars']) >= min_rating]
-
-        if sort_by == "Price: Low to High":
-            filtered = sorted(filtered, key=lambda x: x['price'])
-        elif sort_by == "Price: High to Low":
-            filtered = sorted(filtered, key=lambda x: x['price'], reverse=True)
-        elif sort_by == "Discount: High to Low":
-            filtered = sorted(filtered, key=lambda x: x['discount'], reverse=True)
-        elif sort_by == "Rating: High to Low":
-            filtered = sorted(filtered, key=lambda x: float(x['stars']), reverse=True)
-
-        if filtered:
-            intro = get_intro_message(st.session_state.query, len(filtered))
-            st.markdown(f"<div style='font-size:20px; margin-bottom:20px;'>{intro}</div>", unsafe_allow_html=True)
-            st.balloons()
-        else:
-            st.warning("No products match the current filters.")
-            st.session_state.results = []
-            st.rerun()
-
-        items_per_page = 5
-        total_pages = (len(filtered) - 1) // items_per_page + 1 if filtered else 0
-        page = st.session_state.page
-        start = (page - 1) * items_per_page
-        end = start + items_per_page
-        page_results = filtered[start:end]
-
-        for product in page_results:
-            with st.container():
-                st.markdown("<div class='product-card'>", unsafe_allow_html=True)
-                col1, col2 = st.columns([1, 3])
-                with col1:
-                    st.image(product["image"], width=180)
-                with col2:
-                    st.markdown(f"### {product['title']}")
-                    st.write(f"📂 **Category:** {product['category']}")
-                    st.write(f"⭐ {product['stars']} &nbsp;&nbsp; 📝 {product['reviews']} Reviews")
-                    st.markdown(f"<div class='price'>₹{product['price']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='old-price'>₹{product['listPrice']}</div>", unsafe_allow_html=True)
-                    st.markdown(f"<div class='discount'>🎉 {product['discount']}% OFF</div>", unsafe_allow_html=True)
-                    if str(product["bestSeller"]).lower() == "true":
-                        st.success("🏆 Amazon Best Seller")
-                    st.link_button("🛒 View on Amazon", product["url"])
-
-                    asin = product["asin"]
-                    button_label = "🔊 Speak this"
-                    if st.session_state.tts_playing_asin == asin:
-                        button_label = "⏹️ Stop speaking"
-                    if st.button(button_label, key=f"speak_{asin}"):
-                        details = f"{product['title']}. Price ₹{product['price']}. Discount {product['discount']} percent."
-                        lang = 'hi' if display_lang == 'Hindi' else 'en'
-                        speak_text(details, lang, asin=asin)
-                        st.rerun()
-
-                st.markdown("</div>", unsafe_allow_html=True)
-
-        if total_pages > 1:
-            col1, col2, col3 = st.columns([1, 2, 1])
-            with col1:
-                if st.button("⬅️ Previous") and page > 1:
-                    st.session_state.page = page - 1
-                    st.rerun()
-            with col2:
-                st.write(f"Page {page} of {total_pages}")
-            with col3:
-                if st.button("Next ➡️") and page < total_pages:
-                    st.session_state.page = page + 1
-                    st.rerun()
-
-        if st.button("🔊 Speak All Results Summary"):
             if filtered:
-                summary = f"Found {len(filtered)} products. "
-                for i, p in enumerate(filtered[:3]):
-                    summary += f"Product {i+1}: {p['title']}, price ₹{p['price']}. "
-                speak_text(summary, 'hi' if display_lang == 'Hindi' else 'en')
+                intro = get_intro_message(st.session_state.query, len(filtered))
+                st.markdown(f"<div style='font-size:20px; margin-bottom:20px;'>{intro}</div>", unsafe_allow_html=True)
+                st.balloons()
             else:
-                speak_text("No products match the current filters.", 'hi' if display_lang == 'Hindi' else 'en')
-    else:
-        if st.session_state.query or selected_category != "All":
-            st.info("No products to display. Try a different search or category.")
+                st.warning("No products match the current filters.")
+                st.session_state.results = []
+                st.rerun()
+
+            items_per_page = 5
+            total_pages = (len(filtered) - 1) // items_per_page + 1 if filtered else 0
+            page = st.session_state.page
+            start = (page - 1) * items_per_page
+            end = start + items_per_page
+            page_results = filtered[start:end]
+
+            for product in page_results:
+                with st.container():
+                    st.markdown("<div class='product-card'>", unsafe_allow_html=True)
+                    col1, col2 = st.columns([1, 3])
+                    with col1:
+                        st.image(product["image"], width=180)
+                    with col2:
+                        st.markdown(f"### {product['title']}")
+                        st.write(f"📂 **Category:** {product['category']}")
+                        st.write(f"⭐ {product['stars']} &nbsp;&nbsp; 📝 {product['reviews']} Reviews")
+                        st.markdown(f"<div class='price'>₹{product['price']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='old-price'>₹{product['listPrice']}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div class='discount'>🎉 {product['discount']}% OFF</div>", unsafe_allow_html=True)
+                        if str(product["bestSeller"]).lower() == "true":
+                            st.success("🏆 Amazon Best Seller")
+                        st.link_button("🛒 View on Amazon", product["url"])
+
+                        # Simplified "Speak this" button – no toggle
+                        if st.button("🔊 Speak this", key=f"speak_{product['asin']}"):
+                            details = f"{product['title']}. Price ₹{product['price']}. Discount {product['discount']} percent."
+                            lang = 'hi' if display_lang == 'Hindi' else 'en'
+                            speak_text(details, lang)
+
+                    st.markdown("</div>", unsafe_allow_html=True)
+
+            if total_pages > 1:
+                col1, col2, col3 = st.columns([1, 2, 1])
+                with col1:
+                    if st.button("⬅️ Previous") and page > 1:
+                        st.session_state.page = page - 1
+                        st.rerun()
+                with col2:
+                    st.write(f"Page {page} of {total_pages}")
+                with col3:
+                    if st.button("Next ➡️") and page < total_pages:
+                        st.session_state.page = page + 1
+                        st.rerun()
+
+            if st.button("🔊 Speak All Results Summary"):
+                if filtered:
+                    summary = f"Found {len(filtered)} products. "
+                    for i, p in enumerate(filtered[:3]):
+                        summary += f"Product {i+1}: {p['title']}, price ₹{p['price']}. "
+                    speak_text(summary, 'hi' if display_lang == 'Hindi' else 'en')
+                else:
+                    speak_text("No products match the current filters.", 'hi' if display_lang == 'Hindi' else 'en')
         else:
-            st.info("🔍 Start by typing a product name, speaking, or uploading an image.")
+            if st.session_state.query or selected_category != "All":
+                st.info("No products to display. Try a different search or category.")
+            else:
+                st.info("🔍 Start by typing a product name, speaking, or uploading an image.")
+
+    except Exception as e:
+        st.error(f"🚨 An error occurred on the main page:\n\n{str(e)}")
+        st.exception(e)
