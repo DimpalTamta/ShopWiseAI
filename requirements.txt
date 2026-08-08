@@ -1,0 +1,15 @@
+streamlit
+pandas
+numpy
+faiss-cpu
+sentence-transformers
+SpeechRecognition
+pyaudio
+gtts
+pygame
+langdetect
+deep-translator
+torch
+transformers
+Pillow
+requests

@@ -1,0 +1,203 @@
+1. Show me some good laptops.
+2. Recommend a smartphone.
+3. Suggest a stylish watch for women.
+4.Show me some non-stick cookware sets.
+3. I want to buy a pair of comfortable running shoes.
+4. Can you find a wireless headset under 3000?
+5. Suggest a stylish watch for women under 5000.
+6. Show me the best selling books this year.
+7. I need a backpack for college with good storage.
+8. Search for a leather wallet for men.
+9. Find a smartwatch that is waterproof.
+Show me some non-stick cookware sets.
+10. Recommend a power bank with 20000mAh capacity.
+11. I want to buy a laptop with 16GB RAM.
+12. Show me laptops between 50000 and 80000.
+13. Suggest a budget-friendly earphone under 2000.
+14. What are the best gaming laptops available?
+15. Can you recommend a good air purifier for a bedroom?
+16. I need a reliable external hard drive 1TB.
+17. Show me a good tablet for online classes.
+18. Find a durable and stylish backpack for travel.
+19. Recommend a wireless charging pad for my phone.
+20. I want to buy a coffee maker machine.
+21. Show me some non-stick cookware sets.
+22. Suggest a comfortable office chair under 15000.
+23. Find me a kitchen knife set with good reviews.
+24. I need a fitness tracker with heart rate monitor.
+25. Recommend a good camera for vlogging.
+26. Show me a portable speaker with deep bass.
+27. Suggest a phone with a long battery life.
+28. I want to buy a monitor for my desktop setup.
+29. Find a good quality leather belt for men.
+30. Recommend a sunscreen lotion for oily skin.
+31. Show me some books on Indian cooking.
+32. Suggest a camping tent for 4 persons.
+33. I need a car phone holder for my car.
+34. Find a stylish handbag for women.
+35. Recommend a laptop with a backlit keyboard.
+36. Show me a Bluetooth speaker with good audio.
+37. I want to buy a watch for my father.
+38. Suggest a budget-friendly smartphone under 15000.
+39. Find a durable and waterproof phone case.
+40. Recommend a good quality hair straightener.
+41. Show me some running shoes for women.
+42. I need a laptop stand for my desk.
+43. Suggest a light and compact travel bag.
+44. Find a microwave oven with smart features.
+45. Recommend a vacuum cleaner for home use.
+46. Show me a gaming keyboard and mouse combo.
+47. I want to buy a good quality pen for gifting.
+48. Suggest a stylish sunglasses for summer.
+49. Find a power strip with USB ports.
+50. Recommend a budget-friendly TV under 30000.
+51. Show me a laptop with a touchscreen.
+52. I need a good quality backpack for hiking.
+53. Suggest a wireless mouse for my laptop.
+54. Find a durable and stylish wallet for women.
+55. Recommend a good quality pillow for neck pain.
+56. Show me some healthy cookbooks.
+57. I want to buy a good quality mixer grinder.
+58. Suggest a good quality yoga mat.
+59. Find a comfortable and stylish pair of sandals.
+60. Recommend a good quality umbrella for rain.
+61. Show me a laptop with good battery life.
+62. I need a good quality electric toothbrush.
+63. Suggest a good quality luggage set.
+64. Find a good quality bicycle for commuting.
+65. Recommend a good quality power drill.
+66. Show me some good quality kids toys.
+67. I want to buy a good quality thermal flask.
+68. Suggest a good quality water bottle.
+69. Find a good quality face cream for glowing skin.
+70. Recommend a good quality hair oil.
+71. Show me a laptop with a good display.
+72. I need a good quality showerhead.
+73. Suggest a good quality plant pot.
+74. Find a good quality wall clock.
+75. Recommend a good quality bedside lamp.
+76. Show me a laptop with good customer reviews.
+77. I want to buy a good quality phone stand.
+78. Suggest a good quality memory card.
+79. Find a good quality pen drive.
+80. Recommend a good quality extension board.
+81. Show me a laptop that is lightweight.
+82. I need a good quality lunch box.
+83. Suggest a good quality belt.
+84. Find a good quality scarf.
+85. Recommend a good quality gloves.
+86. Show me a laptop with a fast processor.
+87. I want to buy a good quality curtain.
+88. Suggest a good quality bedsheet.
+89. Find a good quality table lamp.
+90. Recommend a good quality mattress.
+91. Show me a laptop under 50000.
+92. I need a good quality blender.
+93. Suggest a good quality toaster.
+94. Find a good quality iron.
+95. Recommend a good quality hair dryer.
+96. Show me a laptop with good graphics.
+97. I want to buy a good quality school bag.
+98. Suggest a good quality lunchbox.
+99. Find a good quality water filter.
+100. Recommend a good quality electric kettle.
+101. मुझे 40000 रुपये से कम के कुछ अच्छे लैपटॉप दिखाओ।
+102. मुझे एक अच्छा स्मार्टफोन चाहिए जिसका कैमरा बहुत अच्छा हो।
+103. सस्ते और अच्छे ईयरफोन सुझाओ।
+104. मुझे ट्रैवल के लिए एक टिकाऊ बैकपैक चाहिए।
+105. 5000 से कम की महिलाओं की घड़ी का सुझाव दें।
+106. क्या आपके पास 20000 से 30000 के बीच कोई अच्छा टैबलेट है?
+107. मुझे एक अच्छा कॉफ़ी मेकर चाहिए।
+108. बच्चों के लिए शैक्षिक खिलौने दिखाओ।
+109. मैं अपने लिए एक अच्छा रनिंग शूज खरीदना चाहता हूँ।
+110. कृपया फ्रिज के लिए कोई अच्छा एयर प्यूरीफायर सुझाएँ।
+111. मुझे 15000 से कम का अच्छा ऑफिस चेयर चाहिए।
+112. बढ़िया क्वालिटी और टिकाऊ बैग दिखाओ।
+113. क्या आपके पास बड़ी स्क्रीन और अच्छी बैटरी वाला फोन है?
+114. मुझे किचन के लिए कोई उपयोगी उत्पाद सुझाओ।
+115. सबसे लोकप्रिय और बिकने वाले उत्पाद बताओ।
+116. मुझे एक अच्छा कैमरा बैग चाहिए जो मेरे DSLR के लिए हो।
+117. कुछ अच्छे ब्लूटूथ हेडफोन दिखाओ जिनमें शोर रद्द करने की क्षमता हो।
+118. मुझे एक टिकाऊ और फैशनेबल बैकपैक चाहिए।
+119. एक अच्छा स्मार्टफोन सुझाओ जिसमें अच्छा डिस्प्ले और फास्ट चार्जिंग हो।
+120. मेरे डेस्कटॉप के लिए एक बजट-फ्रेंडली मॉनिटर ढूंढो।
+121. लंबे समय तक काम करने के लिए एक आरामदायक कुर्सी चाहिए।
+122. एक विश्वसनीय और सस्ता प्रिंटर सुझाओ।
+123. 1500 रुपये से कम के फैशन एक्सेसरीज़ दिखाओ।
+124. मुझे एक अच्छा चमड़े का बटुआ चाहिए।
+125. क्या आपके पास 4K वीडियो रिकॉर्डिंग वाला कैमरा है?
+126. मुझे एक अच्छा जिम बैग चाहिए।
+127. सस्ता और टिकाऊ सामान बताओ।
+128. Amazon पर सबसे ज़्यादा बिकने वाले उत्पाद बताओ।
+129. मुझे एक अच्छा ब्लेंडर चाहिए।
+130. बच्चों के लिए इंटरएक्टिव खिलौने दिखाओ।
+131. I am looking for a laptop with an i7 processor and SSD.
+132. Can you find me a good-quality leather jacket?
+133. Show me some affordable gaming mice under 2000.
+134. I need a good-quality tent for camping.
+135. Recommend a laptop with good battery life for students.
+136. Show me a phone with a large screen and good camera.
+137. I want to buy a high-quality power bank.
+138. Suggest a comfortable pair of sports shoes.
+139. Find a good kitchen knife set with a block.
+140. I need a reliable and fast external SSD.
+141. Show me some stylish backpacks for men.
+142. Recommend a good quality rice cooker.
+143. I want to buy a durable and lightweight suitcase.
+144. Suggest a good quality camera for wildlife photography.
+145. Find a good pair of noise-cancelling headphones.
+146. I need a smartwatch with GPS and heart rate monitoring.
+147. Show me some budget-friendly wireless earbuds.
+148. Recommend a good quality air fryer.
+149. I want to buy a high-quality desk lamp.
+150. Suggest a good quality electric shaver.
+151. Find a good quality yoga block.
+152. I need a good quality travel pillow.
+153. Show me a laptop with a 4K display.
+154. Recommend a good quality laundry basket.
+155. I want to buy a good quality baking sheet.
+156. Suggest a good quality garden hose.
+157. Find a good quality pet bed.
+158. I need a good quality photo frame.
+159. Show me a laptop with a numeric keypad.
+160. Recommend a good quality cutting board.
+161. I want to buy a good quality coffee mug.
+162. Suggest a good quality soap dispenser.
+163. Find a good quality toothbrush holder.
+164. I need a good quality shower curtain.
+165. Show me a laptop with a webcam.
+166. Recommend a good quality bath towel.
+167. I want to buy a good quality seat cushion.
+168. Suggest a good quality car seat cover.
+169. Find a good quality garden chair.
+170. I need a good quality barbecue grill.
+171. Show me a laptop with good sound quality.
+172. Recommend a good quality fire extinguisher.
+173. I want to buy a good quality flashlight.
+174. Suggest a good quality ceiling fan.
+175. Find a good quality air cooler.
+176. I need a good quality heater.
+177. Show me a laptop with a good keyboard.
+178. Recommend a good quality door mat.
+179. I want to buy a good quality wall shelf.
+180. Suggest a good quality shoe rack.
+181. Find a good quality storage bin.
+182. I need a good quality laundry hamper.
+183. Show me a laptop with good build quality.
+184. Recommend a good quality backpack cooler.
+185. I want to buy a good quality golf bag.
+186. Suggest a good quality tennis racquet.
+187. Find a good quality bicycle helmet.
+188. I need a good quality ski goggles.
+189. Show me a laptop with a fingerprint reader.
+190. Recommend a good quality hiking poles.
+191. I want to buy a good quality tent stove.
+192. Suggest a good quality camping chair.
+193. Find a good quality survival knife.
+194. I need a good quality compass.
+195. Show me a laptop with a fast charger.
+196. Recommend a good quality binoculars.
+197. I want to buy a good quality telescope.
+198. Suggest a good quality microscope.
+199. Find a good quality globe.
+200. I need a good quality desk organizer.

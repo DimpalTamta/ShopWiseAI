@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+
+# Generated index & embedding files (these are large and rebuilt)
+*.index
+*.pkl
+*.tmp
+
+# Virtual environment
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
